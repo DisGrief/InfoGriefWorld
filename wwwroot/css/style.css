@@ -829,31 +829,31 @@ section {
     background-image: radial-gradient(rgba(226, 102, 15, 0.3) 1.3px, transparent 1.3px);
     background-size: 22px 22px;
     pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 0%, #000 50%, rgba(0, 0, 0, 0.1) 100%);
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 0%, #000 50%, rgba(0, 0, 0, 0.1) 100%);
+    -webkit-mask-size: 380px 100%;
+    mask-size: 380px 100%;
 }
 
 .rules::before {
     opacity: 0.65;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 38%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 38%);
-    animation: dotsRight 14s linear infinite;
+    animation: waveRight 5s linear infinite;
 }
 
 .rules::after {
     opacity: 0.4;
     background-image: radial-gradient(rgba(120, 78, 30, 0.35) 1.3px, transparent 1.3px);
-    -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 38%);
-    mask-image: linear-gradient(to left, transparent 0%, #000 38%);
-    animation: dotsLeft 18s linear infinite;
+    animation: waveLeft 6.5s linear infinite;
 }
 
-@keyframes dotsRight {
-    from { background-position: 0 0; }
-    to { background-position: 220px 0; }
+@keyframes waveRight {
+    from { mask-position: 0 0; }
+    to { mask-position: 380px 0; }
 }
 
-@keyframes dotsLeft {
-    from { background-position: 0 0; }
-    to { background-position: -220px 0; }
+@keyframes waveLeft {
+    from { mask-position: 0 0; }
+    to { mask-position: -380px 0; }
 }
 
 .rules .section-header {
