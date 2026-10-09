@@ -2,7 +2,48 @@
 const canvas = document.getElementById('particles-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
-const mouseTrail = [];
+const leaves = [];
+
+const LEAF_COLORS = ['#e2660f', '#c2410c', '#f0912c', '#f2b434', '#b45309', '#d97706', '#a8451c'];
+
+function drawLeafShape(x, y, size, rot, color, alpha) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, -size);
+    ctx.bezierCurveTo(size * 0.85, -size * 0.45, size * 0.7, size * 0.6, 0, size);
+    ctx.bezierCurveTo(-size * 0.7, size * 0.6, -size * 0.85, -size * 0.45, 0, -size);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(60, 30, 10, 0.35)';
+    ctx.lineWidth = Math.max(0.6, size * 0.11);
+    ctx.beginPath();
+    ctx.moveTo(0, -size * 0.85);
+    ctx.lineTo(0, size * 0.85);
+    ctx.stroke();
+    ctx.restore();
+}
+
+function spawnLeaf(x, y, opts = {}) {
+    leaves.push({
+        x,
+        y,
+        size: opts.size || 7 + Math.random() * 6,
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 0.09,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: opts.vy || 0.45 + Math.random() * 0.7,
+        sway: 0.6 + Math.random() * 1.4,
+        swaySpeed: 0.02 + Math.random() * 0.03,
+        phase: Math.random() * Math.PI * 2,
+        color: LEAF_COLORS[Math.floor(Math.random() * LEAF_COLORS.length)],
+        alpha: opts.alpha != null ? opts.alpha : 0.85,
+        fade: opts.fade || 0,
+        t: 0
+    });
+}
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -28,11 +69,11 @@ class Particle {
 
     getRandomColor() {
         const colors = [
-            '34, 211, 238',
-            '167, 139, 250',
-            '52, 211, 153',
-            '234, 179, 8',
-            '26, 26, 46'
+            '226, 102, 15',
+            '194, 65, 12',
+            '242, 180, 52',
+            '180, 83, 9',
+            '217, 119, 6'
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     }
@@ -61,20 +102,39 @@ for (let i = 0; i < 50; i++) {
     particles.push(p);
 }
 
+let leafFrame = 0;
+
 function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = mouseTrail.length - 1; i >= 0; i--) {
-        const p = mouseTrail[i];
-        p.life -= 0.045;
-        if (p.life <= 0) {
-            mouseTrail.splice(i, 1);
+    leafFrame++;
+    if (leafFrame % 34 === 0 && leaves.filter(l => l.fade === 0).length < 14) {
+        spawnLeaf(Math.random() * canvas.width, -20, { vy: 0.35 + Math.random() * 0.5 });
+    }
+
+    for (let i = leaves.length - 1; i >= 0; i--) {
+        const l = leaves[i];
+        l.t++;
+        l.phase += l.swaySpeed;
+        l.x += l.vx + Math.sin(l.phase) * l.sway * 0.35;
+        l.y += l.vy;
+        l.rot += l.vr + Math.sin(l.phase) * 0.012;
+
+        let alpha = l.alpha;
+        if (l.fade > 0) {
+            alpha = l.alpha * Math.max(0, 1 - l.t / l.fade);
+            if (l.t >= l.fade) {
+                leaves.splice(i, 1);
+                continue;
+            }
+        }
+
+        if (l.y > canvas.height + 40 || l.x < -60 || l.x > canvas.width + 60) {
+            leaves.splice(i, 1);
             continue;
         }
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 9 * p.life + 2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(249, 115, 22, ${p.life * 0.14})`;
-        ctx.fill();
+
+        drawLeafShape(l.x, l.y, l.size, l.rot, l.color, alpha);
     }
 
     particles.forEach(p => {
@@ -120,11 +180,11 @@ createClouds();
 function createFloatingBlocks() {
     const container = document.getElementById('floating-blocks');
     const blockColors = [
-        { bg: 'rgba(34, 211, 238, 0.12)', border: 'rgba(34, 211, 238, 0.2)' },
-        { bg: 'rgba(167, 139, 250, 0.12)', border: 'rgba(167, 139, 250, 0.2)' },
-        { bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.2)' },
-        { bg: 'rgba(234, 179, 8, 0.1)', border: 'rgba(234, 179, 8, 0.15)' },
-        { bg: 'rgba(26, 26, 46, 0.06)', border: 'rgba(26, 26, 46, 0.1)' }
+        { bg: 'rgba(226, 102, 15, 0.16)', border: 'rgba(226, 102, 15, 0.3)' },
+        { bg: 'rgba(194, 65, 12, 0.14)', border: 'rgba(194, 65, 12, 0.28)' },
+        { bg: 'rgba(242, 180, 52, 0.18)', border: 'rgba(242, 180, 52, 0.32)' },
+        { bg: 'rgba(180, 83, 9, 0.14)', border: 'rgba(180, 83, 9, 0.26)' },
+        { bg: 'rgba(120, 66, 20, 0.1)', border: 'rgba(120, 66, 20, 0.18)' }
     ];
 
     for (let i = 0; i < 12; i++) {
@@ -145,8 +205,6 @@ function createFloatingBlocks() {
             animation-delay: ${delay}s;
             background: ${type.bg};
             border: 1px solid ${type.border};
-            border-radius: 3px;
-            backdrop-filter: blur(2px);
         `;
 
         container.appendChild(block);
@@ -299,10 +357,23 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// ============ MOUSE GLOW ============
+// ============ CURSOR LEAF TRAIL ============
+let lastLeafAt = 0;
+
 document.addEventListener('mousemove', (e) => {
-    mouseTrail.push({ x: e.clientX, y: e.clientY, life: 1 });
-    if (mouseTrail.length > 30) mouseTrail.shift();
+    const now = performance.now();
+    if (now - lastLeafAt < 55) return;
+    lastLeafAt = now;
+    spawnLeaf(
+        e.clientX + (Math.random() - 0.5) * 12,
+        e.clientY + (Math.random() - 0.5) * 12,
+        {
+            size: 6 + Math.random() * 7,
+            vy: 0.5 + Math.random() * 0.9,
+            fade: 75,
+            alpha: 0.9
+        }
+    );
 });
 
 // ============ REAL ONLINE ============
