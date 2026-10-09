@@ -2,6 +2,7 @@
 const canvas = document.getElementById('particles-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
+const mouseTrail = [];
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -62,6 +63,20 @@ for (let i = 0; i < 50; i++) {
 
 function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = mouseTrail.length - 1; i >= 0; i--) {
+        const p = mouseTrail[i];
+        p.life -= 0.045;
+        if (p.life <= 0) {
+            mouseTrail.splice(i, 1);
+            continue;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 9 * p.life + 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(249, 115, 22, ${p.life * 0.14})`;
+        ctx.fill();
+    }
+
     particles.forEach(p => {
         p.update();
         p.draw();
@@ -142,13 +157,46 @@ createFloatingBlocks();
 // ============ NAVBAR ============
 const navbar = document.getElementById('navbar');
 
-window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 50) {
+// ============ SCROLL PROGRESS + HERO PARALLAX ============
+const scrollProgress = document.createElement('div');
+scrollProgress.className = 'scroll-progress';
+document.body.appendChild(scrollProgress);
+
+const heroContent = document.querySelector('.hero-content');
+const scrollIndicator = document.querySelector('.scroll-indicator');
+let scrollTicking = false;
+
+function onScroll() {
+    const y = window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    document.documentElement.style.setProperty('--scroll', String(docHeight > 0 ? (y / docHeight).toFixed(4) : 0));
+
+    if (y > 50) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
+
+    const vh = window.innerHeight;
+    if (y < vh) {
+        const progress = y / vh;
+        heroContent.style.transform = `translateY(${y * 0.16}px)`;
+        heroContent.style.opacity = String(Math.max(0, 1 - progress * 1.25));
+        if (scrollIndicator) {
+            scrollIndicator.style.opacity = String(Math.max(0, 1 - progress * 3));
+        }
+    }
+
+    scrollTicking = false;
+}
+
+window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+        scrollTicking = true;
+        requestAnimationFrame(onScroll);
+    }
 });
+onScroll();
 
 // Active nav link
 const sections = document.querySelectorAll('section[id]');
@@ -188,13 +236,15 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-document.querySelectorAll('.feature-card, .rule-item, .join-step').forEach(el => {
+document.querySelectorAll('.feature-card, .rule-item, .join-step, .section-header').forEach(el => {
     observer.observe(el);
 });
 
 // ============ COUNTER ANIMATION ============
-document.querySelectorAll('.stat-num').forEach(counter => {
+document.querySelectorAll('.stat-num[data-target]').forEach(counter => {
     const target = parseInt(counter.getAttribute('data-target'));
+    if (Number.isNaN(target)) return;
+
     const duration = 2000;
     const step = target / (duration / 16);
 
@@ -250,19 +300,28 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ============ MOUSE GLOW ============
-let mouseX = 0, mouseY = 0;
-
 document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    ctx.beginPath();
-    ctx.arc(mouseX, mouseY, 1.5, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(34, 211, 238, 0.15)';
-    ctx.fill();
+    mouseTrail.push({ x: e.clientX, y: e.clientY, life: 1 });
+    if (mouseTrail.length > 30) mouseTrail.shift();
 });
 
 // ============ REAL ONLINE ============
+function animateNumber(el, to, duration = 900) {
+    const from = parseInt(el.textContent) || 0;
+    if (from === to) {
+        el.textContent = String(to);
+        return;
+    }
+    const start = performance.now();
+    const tick = (now) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = String(Math.round(from + (to - from) * eased));
+        if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+}
+
 async function fetchOnline() {
     try {
         const res = await fetch('https://api.mcsrvstat.us/3/mc.griefworlds.ru');
@@ -270,16 +329,19 @@ async function fetchOnline() {
         if (data.online) {
             const online = data.players.online;
             const max = data.players.max;
-            document.getElementById('online-count').textContent = online;
+            animateNumber(document.getElementById('online-count'), online);
             document.getElementById('badge-online').textContent = `Сервер онлайн — ${online} из ${max} игроков`;
+            document.querySelector('.badge-dot').style.background = '#34d399';
+            document.querySelector('.badge-dot').style.boxShadow = '0 0 10px rgba(52, 211, 153, 0.9)';
         } else {
             document.getElementById('online-count').textContent = '0';
             document.getElementById('badge-online').textContent = 'Сервер оффлайн';
             document.querySelector('.badge-dot').style.background = '#ef4444';
+            document.querySelector('.badge-dot').style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.9)';
         }
     } catch {
         document.getElementById('online-count').textContent = '—';
-        document.getElementById('badge-online').textContent = 'Сервер онлайн';
+        document.getElementById('badge-online').textContent = 'Статус недоступен';
     }
 }
 fetchOnline();
