@@ -243,8 +243,7 @@ h3 {
     width: 34px;
     height: 34px;
     border-radius: 9px;
-    object-fit: cover;
-    box-shadow: 0 4px 12px -4px rgba(16, 24, 40, 0.35);
+    object-fit: contain;
     transition: transform 0.4s var(--ease);
 }
 
@@ -1101,8 +1100,7 @@ section {
     width: 34px;
     height: 34px;
     border-radius: 9px;
-    object-fit: cover;
-    box-shadow: 0 4px 12px -4px rgba(16, 24, 40, 0.3);
+    object-fit: contain;
 }
 
 .footer-brand {
