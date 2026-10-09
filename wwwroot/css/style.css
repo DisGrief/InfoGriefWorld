@@ -833,12 +833,16 @@ section {
 
 .rules::before {
     opacity: 0.65;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 38%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 38%);
     animation: dotsRight 14s linear infinite;
 }
 
 .rules::after {
     opacity: 0.4;
     background-image: radial-gradient(rgba(120, 78, 30, 0.35) 1.3px, transparent 1.3px);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 38%);
+    mask-image: linear-gradient(to left, transparent 0%, #000 38%);
     animation: dotsLeft 18s linear infinite;
 }
 
