@@ -732,7 +732,7 @@ section {
     position: relative;
     overflow: hidden;
     padding: 30px 28px 32px;
-    background: linear-gradient(180deg, rgba(255, 254, 251, 0.96), rgba(255, 252, 245, 0.82));
+    background: linear-gradient(180deg, #fdf9f0, #f9f2e5);
     border: 1px solid rgba(255, 255, 255, 0.9);
     border-radius: var(--radius);
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 14px 34px -14px rgba(16, 24, 40, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
@@ -761,46 +761,13 @@ section {
 
 .feature-card:hover {
     transform: translateY(-6px);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
+    background: linear-gradient(180deg, #fffcf5, #fbf5ea);
     border-color: rgba(226, 102, 15, 0.22);
     box-shadow: var(--shadow-lift), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .feature-card:hover::before {
     transform: scaleX(1);
-}
-
-.feature-icon-wrap {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 22px -12px rgba(16, 24, 40, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
-}
-
-.feature-card:hover .feature-icon-wrap {
-    transform: translateY(-3px) scale(1.07) rotate(-5deg);
-}
-
-.gradient-1 { background: linear-gradient(135deg, rgba(226, 102, 15, 0.18), rgba(226, 102, 15, 0.06)); color: var(--accent); }
-.gradient-2 { background: linear-gradient(135deg, rgba(240, 145, 44, 0.18), rgba(240, 145, 44, 0.06)); color: var(--accent-2); }
-.gradient-3 { background: linear-gradient(135deg, rgba(242, 180, 52, 0.2), rgba(242, 180, 52, 0.06)); color: #d97706; }
-.gradient-4 { background: linear-gradient(135deg, rgba(167, 139, 250, 0.18), rgba(167, 139, 250, 0.06)); color: #8b5cf6; }
-.gradient-5 { background: linear-gradient(135deg, rgba(52, 211, 153, 0.18), rgba(52, 211, 153, 0.06)); color: #10b981; }
-.gradient-6 { background: linear-gradient(135deg, rgba(244, 63, 94, 0.18), rgba(244, 63, 94, 0.06)); color: #f43f5e; }
-
-.feature-label {
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: #111111;
-    margin-bottom: 12px;
 }
 
 .feature-card h3 {
