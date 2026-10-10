@@ -924,22 +924,32 @@ section {
 
 .join-steps {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
+    grid-template-columns: 1fr;
+    gap: 0;
     width: 100%;
-}
-
-.join-step {
-    position: relative;
-    padding: 26px 24px 28px;
-    text-align: left;
     background: linear-gradient(180deg, #fdf9f0, #f9f2e5);
     border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: var(--radius);
     box-shadow: var(--shadow-card);
-    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.4s var(--ease);
+    overflow: hidden;
+}
+
+.join-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    padding: 22px 28px;
+    text-align: left;
+    border-bottom: 1px dashed rgba(60, 42, 24, 0.16);
+    transition: background 0.3s var(--ease);
     opacity: 0;
     transform: translateY(20px);
+}
+
+.join-step:last-child {
+    border-bottom: none;
 }
 
 .join-step.visible {
@@ -948,12 +958,11 @@ section {
 }
 
 .join-step:hover {
-    transform: translateY(-6px);
-    border-color: rgba(226, 102, 15, 0.22);
-    box-shadow: var(--shadow-lift);
+    background: rgba(255, 255, 255, 0.55);
 }
 
 .step-num {
+    display: none;
     font-family: 'Space Grotesk', sans-serif;
     font-size: 44px;
     font-weight: 700;
@@ -963,19 +972,14 @@ section {
     transition: color 0.4s var(--ease);
 }
 
-.join-step:hover .step-num {
-    color: rgba(226, 102, 15, 0.5);
-}
-
 .join-step h3 {
     font-size: 15px;
     font-weight: 700;
-    margin-bottom: 6px;
     color: var(--text);
 }
 
 .join-step p {
-    font-size: 12.5px;
+    font-size: 13.5px;
     color: var(--text-dim);
     line-height: 1.65;
 }
@@ -1207,7 +1211,7 @@ section {
     }
 
     .join-steps {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
     }
 
     .nav-socials {
@@ -1241,7 +1245,13 @@ section {
     }
 
     .join-steps {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
+    }
+
+    .join-step {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 18px 20px;
     }
 
     .hero-stats {
