@@ -332,6 +332,7 @@ h3 {
 }
 
 .nav-social-link {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -339,13 +340,29 @@ h3 {
     height: 34px;
     border-radius: 10px;
     color: var(--text-dim);
-    transition: all 0.25s var(--ease);
+    transition: color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.nav-social-link::after {
+    content: "";
+    position: absolute;
+    left: 7px;
+    right: 7px;
+    bottom: 2px;
+    height: 2px;
+    background: var(--gradient-warm);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease);
 }
 
 .nav-social-link:hover {
     color: var(--accent);
-    background: rgba(226, 102, 15, 0.1);
     transform: translateY(-2px);
+}
+
+.nav-social-link:hover::after {
+    transform: scaleX(1);
 }
 
 .nav-ip {
@@ -1117,13 +1134,29 @@ section {
     font-weight: 600;
     padding: 8px 14px;
     border-radius: 100px;
-    transition: all 0.25s var(--ease);
+    transition: color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.footer-link::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 4px;
+    height: 2px;
+    background: var(--gradient-warm);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease);
 }
 
 .footer-link:hover {
     color: var(--accent);
-    background: rgba(226, 102, 15, 0.08);
     transform: translateY(-2px);
+}
+
+.footer-link:hover::after {
+    transform: scaleX(1);
 }
 
 .footer-bottom {
