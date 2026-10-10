@@ -794,6 +794,15 @@ section {
 .gradient-5 { background: linear-gradient(135deg, rgba(52, 211, 153, 0.18), rgba(52, 211, 153, 0.06)); color: #10b981; }
 .gradient-6 { background: linear-gradient(135deg, rgba(244, 63, 94, 0.18), rgba(244, 63, 94, 0.06)); color: #f43f5e; }
 
+.feature-label {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #111111;
+    margin-bottom: 12px;
+}
+
 .feature-card h3 {
     font-size: 16px;
     font-weight: 700;
