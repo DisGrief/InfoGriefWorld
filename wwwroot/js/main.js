@@ -395,8 +395,14 @@ function animateNumber(el, to, duration = 900) {
 
 async function fetchOnline() {
     try {
-        const res = await fetch('https://api.mcsrvstat.us/3/mc.griefworlds.ru');
-        const data = await res.json();
+        let data = null;
+        try {
+            const res = await fetch('https://api.mcstatus.io/v2/status/java/mc.griefworlds.ru');
+            data = await res.json();
+        } catch {
+            const res = await fetch('https://api.mcsrvstat.us/3/mc.griefworlds.ru');
+            data = await res.json();
+        }
         if (data.online) {
             const online = data.players.online;
             const max = data.players.max;
@@ -406,7 +412,7 @@ async function fetchOnline() {
             document.querySelector('.badge-dot').style.boxShadow = '0 0 10px rgba(52, 211, 153, 0.9)';
         } else {
             document.getElementById('online-count').textContent = '0';
-            document.getElementById('badge-online').textContent = 'Сервер оффлайн';
+            document.getElementById('badge-online').textContent = 'Сервер офлайн';
             document.querySelector('.badge-dot').style.background = '#ef4444';
             document.querySelector('.badge-dot').style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.9)';
         }
