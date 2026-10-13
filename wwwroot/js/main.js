@@ -12,16 +12,26 @@ function drawLeafShape(x, y, size, rot, color, alpha) {
     ctx.rotate(rot);
     ctx.globalAlpha = alpha;
     ctx.fillStyle = color;
+    const pts = [
+        [0, -1.1], [0.27, -0.63], [0.2, -0.24], [0.55, -0.35],
+        [1, -0.44], [0.66, 0.1], [0.27, 0.15], [0.47, 0.47],
+        [0.47, 0.84], [0.14, 0.6], [0.055, 0.4], [0, 1.25],
+        [-0.055, 0.4], [-0.14, 0.6], [-0.47, 0.84], [-0.47, 0.47],
+        [-0.27, 0.15], [-0.66, 0.1], [-1, -0.44], [-0.55, -0.35],
+        [-0.2, -0.24], [-0.27, -0.63]
+    ];
     ctx.beginPath();
-    ctx.moveTo(0, -size);
-    ctx.bezierCurveTo(size * 0.85, -size * 0.45, size * 0.7, size * 0.6, 0, size);
-    ctx.bezierCurveTo(-size * 0.7, size * 0.6, -size * 0.85, -size * 0.45, 0, -size);
+    for (let i = 0; i < pts.length; i++) {
+        const sx = pts[i][0] * size;
+        const sy = pts[i][1] * size;
+        if (i === 0) ctx.moveTo(sx, sy);
+        else ctx.lineTo(sx, sy);
+    }
+    ctx.closePath();
     ctx.fill();
+    ctx.lineJoin = 'round';
     ctx.strokeStyle = 'rgba(60, 30, 10, 0.35)';
-    ctx.lineWidth = Math.max(0.6, size * 0.11);
-    ctx.beginPath();
-    ctx.moveTo(0, -size * 0.85);
-    ctx.lineTo(0, size * 0.85);
+    ctx.lineWidth = Math.max(0.6, size * 0.07);
     ctx.stroke();
     ctx.restore();
 }
