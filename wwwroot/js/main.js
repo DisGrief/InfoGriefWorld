@@ -1,4 +1,4 @@
-// ============ PARTICLES CANVAS ============
+﻿// ============ PARTICLES CANVAS ============
 const canvas = document.getElementById('particles-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
@@ -433,3 +433,52 @@ async function fetchOnline() {
 }
 fetchOnline();
 setInterval(fetchOnline, 60000);
+
+// ============ THEME TOGGLE ============
+(function () {
+    const saved = localStorage.getItem('gw-theme');
+    const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const urlTheme = new URLSearchParams(location.search).get('theme');
+    document.documentElement.dataset.theme = urlTheme || saved || prefers;
+
+    const MOON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    const SUN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+
+    const btn = document.createElement('button');
+    btn.className = 'theme-toggle';
+    btn.type = 'button';
+    btn.title = 'Сменить тему';
+    btn.setAttribute('aria-label', 'Сменить тему');
+    const render = () => {
+        btn.innerHTML = document.documentElement.dataset.theme === 'dark' ? SUN : MOON;
+    };
+    render();
+    let wiping = false;
+    btn.addEventListener('click', () => {
+        if (wiping) return;
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        const apply = () => {
+            document.documentElement.dataset.theme = next;
+            localStorage.setItem('gw-theme', next);
+            render();
+        };
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            apply();
+            return;
+        }
+        wiping = true;
+        const r = btn.getBoundingClientRect();
+        const veil = document.createElement('div');
+        veil.className = 'theme-veil';
+        veil.style.setProperty('--vt-x', (r.left + r.width / 2) + 'px');
+        veil.style.setProperty('--vt-y', (r.top + r.height / 2) + 'px');
+        veil.style.setProperty('--veil-color', next === 'dark' ? 'rgba(16, 12, 8, 0.94)' : 'rgba(250, 245, 233, 0.94)');
+        document.body.appendChild(veil);
+        void veil.offsetWidth;
+        veil.classList.add('go');
+        setTimeout(apply, 300);
+        setTimeout(() => veil.classList.add('fade'), 850);
+        setTimeout(() => { veil.remove(); wiping = false; }, 1300);
+    });
+    document.body.appendChild(btn);
+})();
